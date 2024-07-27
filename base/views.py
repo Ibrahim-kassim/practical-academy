@@ -2,10 +2,30 @@ from django.shortcuts import render ,redirect
 from django.http import HttpResponse
 from .models import Room
 from .forms import RoomForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth import login ,logout 
 
 
 # Create your views here.
 
+def register(request):
+    form = UserCreationForm()
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            login(request,user)
+            return redirect("home")
+        else:
+            messages.error(request,"an error accuring during registration")
+    context = {"form":form}
+    return render(request,"base/login_register.html" , context)
+
+def logout():
+    logout()
 
 def home(request):
     rooms = Room.objects.all()
