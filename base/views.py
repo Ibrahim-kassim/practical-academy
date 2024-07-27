@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .models import Room
 from .forms import RoomForm
 
+
 # Create your views here.
 
 
@@ -32,3 +33,25 @@ def createRoom(request):
             return redirect('home')
     context = {"form":form}
     return render(request,"base/room_form.html",context)
+
+def updateRoom(request,pk):
+     room = Room.objects.get(id=pk)
+     form = RoomForm(instance=room)
+     if request.method == "POST":
+        form = RoomForm(request.POST,instance=room)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+     context = {"form":form}
+     return render(request,"base/room_form.html",context)
+
+
+def deleteRoom(request,pk):
+    room = Room.objects.get(id=pk)
+    if request.method == "POST":
+        room.delete()
+        return redirect("home")
+
+    context={"room":room}
+    return render(request,"base/delete_room.html",context)
+

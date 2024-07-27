@@ -1,12 +1,66 @@
 {% extends 'main.html' %}
 
-{% block content %}
+{% load widget_tweaks %}
 
-<form action="" method="POST">
+{% block content %}
+<div class="container mt-4">
+    <h2>Create Room</h2>
+    <form method="POST" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.host.id_for_label }}">Host</label>
+            {% render_field form.host class="form-control" %}
+            {% if form.host.errors %}
+                <div class="invalid-feedback">
+                    {{ form.host.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.topic.id_for_label }}">Topic</label>
+            {% render_field form.topic class="form-control" %}
+            {% if form.topic.errors %}
+                <div class="invalid-feedback">
+                    {{ form.topic.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">Room Name</label>
+            {% render_field form.name class="form-control" placeholder="Enter room name" %}
+            {% if form.name.errors %}
+                <div class="invalid-feedback">
+                    {{ form.name.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {% render_field form.description class="form-control" placeholder="Enter description" %}
+            {% if form.description.errors %}
+                <div class="invalid-feedback">
+                    {{ form.description.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock  %}
+ 
+
+
+
+
+<!-- <form action="" method="POST">
     {% csrf_token %}
     {{form.as_p}}
     <input type="submit" value="Submit" >
 
-</form>
+</form> -->
 
-{% endblock %}

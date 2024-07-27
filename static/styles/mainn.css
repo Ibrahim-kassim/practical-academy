@@ -1,0 +1,30 @@
+body {
+    background-color: #f8f9fa; /* Light grey background */
+}
+
+.card {
+    background-color: white; /* White background for cards */
+    border: 1px solid #dee2e6; /* Light grey border for cards */
+}
+
+.card-title {
+    color: blue; /* Blue color for card title */
+}
+
+.card-footer small {
+    color: grey; /* Grey color for footer text */
+}
+
+.btn-primary {
+    background-color: blue; /* Blue button background */
+    border-color: blue; /* Blue button border */
+}
+
+.btn-danger {
+    background-color: red; /* Red button background for delete */
+}
+
+.btn-secondary {
+    background-color: grey; /* Grey button background for edit */
+    border-color: grey; /* Grey button border */
+}

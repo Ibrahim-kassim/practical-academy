@@ -1,26 +1,31 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<div class="leen">
-    <a href="{% url 'create-room' %}">Create-Room</a>
-    {% for room in leen %}
-    <div>
-        @{{room.host.username}}
+<div class="container mt-4 ">
+    <a class="btn btn-primary mb-4" href="{% url 'create-room' %}">Create Room</a>
+    <div class="row">
+        {% for room in leen %}
+        <div class="col-sm-12 col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between">
+                    <span>@{{ room.host.username }}</span>
+                    <small>{{ room.id }}</small>
+                </div>
+                <div class="card-body">
+                    <a class="card-title h5 text-primary" href="{% url 'room' room.id %}">{{ room.name }}</a>
+                    <p class="card-text">{{ room.description }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <small class="text-muted">{{ room.createdAt }}</small>
+                    <small class="text-muted">{{ room.updatedAt }}</small>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a class="btn btn-danger btn-sm" href="{% url 'delete-room' room.id %}">Delete</a>
+                    <a class="btn btn-secondary btn-sm" href="{% url 'update-room' room.id %}">Edit</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    <small>{{room.id}}</small>
-   <a href="{% url 'room' room.id %}">{{room.name}}</a> 
-    <p>{{room.description}}</p>
-
-    <div>
-        <small>{{room.createdAt}}</small>
-        <small>{{room.updatedAt}}</small>
-    </div>
-
-    <hr>
-    {% endfor %}
- 
 </div>
-
-{% endblock  %}
-
-
+{% endblock %}
