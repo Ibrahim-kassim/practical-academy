@@ -1,8 +1,19 @@
 {% extends 'main.html' %}
 
 {% block content %}
+
+<div>
+    {% for topic in topics %}
+    <a href="{%  url 'home' %}?q={{topic.name}}" class="d-flex col-lg-4">{{topic.name}}</a>
+    {% endfor %}
+</div>
 <div class="container mt-4 ">
+    {% if user.is_authenticated %}
+    <h1 class="mb-4">Hello, {{ user.username }}</h1>
+    {% endif %}
+  
     <a class="btn btn-primary mb-4" href="{% url 'create-room' %}">Create Room</a>
+    <small>rooms available {{roomNumber}}</small>
     <div class="row">
         {% for room in leen %}
         <div class="col-sm-12 col-md-6 col-lg-4 mb-4">
@@ -19,10 +30,12 @@
                     <small class="text-muted">{{ room.createdAt }}</small>
                     <small class="text-muted">{{ room.updatedAt }}</small>
                 </div>
+                {% if request.user == room.host %}
                 <div class="card-footer d-flex justify-content-between">
                     <a class="btn btn-danger btn-sm" href="{% url 'delete-room' room.id %}">Delete</a>
                     <a class="btn btn-secondary btn-sm" href="{% url 'update-room' room.id %}">Edit</a>
                 </div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}

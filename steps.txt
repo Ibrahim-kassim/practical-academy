@@ -1,0 +1,173 @@
+pip install virtualenv
+virtualenv myenv
+myenv/scripts/activate
+pip install django
+django-admin
+django-admin startproject nameOfProject(main)
+python manage.py startapp base(your project to work with)
+connect the base 
+creating templates
+set base dir to templates ( takes 2 parameters object and template name)
+
+template inheritence (include sections of templates inside templates )
+
+creating a main template (every single template has one style)
+
+django template engine for variables
+
+
+
+exercise:
+In this Django exercise, students will create a project named cars_project and an app named sellCars.
+They will define a list of rooms in views.py and implement two views:
+home to render a list of cars and room to display details of a specific room based on its ID.
+Students will configure URL routing in urls.py to link these views and create corresponding templates to display the room data dynamically
+
+
+
+
+migrations and database:
+1)python manage.py migrate
+all migration is applied and database built
+
+2)work with models 
+ -- python classes
+ -- python manage.py makemigrations
+        check the migrations folder it created a file for the migrations applied
+ --python manage.py migrate 
+its go to the latest migration and check if they applied succesffully
+
+3)create a user having an admin permissions
+--python manage.py createsuperuser
+--create a Room Class
+-- go to admin and register the Room model to displays in the admin panel
+--retrieve the rooms from the database (Read operation)
+--query sets in django
+--create A message Model having relation with the Room
+--create A Topic Model having relation with the Room
+-- django user model
+--from django.contrib.auth.models import User
+--user having realtion with message and room
+
+done : python manage.py makemigrations
+        python manage.py migrate
+
+--regester them in admin        
+
+read all information from the database
+
+-------------------------------------------
+create operation
+
+create a form named room_form ,view ,url
+
+
+--------------------------------------------------
+week 4:
+create a sidebar containing the topics
+then fetch the topics inside the sidebar
+if you want to retrieve a limit of the topic here the example:
+topics = Topic.objects.all()[:10] // retrieving 10
+topics = Topic.objects.order_by('-created_at')[:10] // retrieving last created 10 topics
+render then in the home.html
+give route to the topicName this href=" {%  url 'home' %}?q={{topic.name}}"
+this q passed to the params to get it in the backend to make a logic for filtration
+go to home view and get the q you passed in the params
+q= request.GET.get("q")
+change the room query to get only the filtered room 
+rooms = Room.objects.filter(topic__name__icontains =q) //  to get the room name that equals to the q value 
+now if you want to filtered by the person name or something else
+we want to use Q :
+from django.db.models import Q
+rooms = Room.objects.filter(Q(topic__name__icontains =q) |
+                                Q(name__icontains= q) |
+                                Q(host__username__icontains =q))
+this is filter rooms by the topic name and name of the rooom and host name                                
+now if i go to the root rout it will displays an error because the q not having a value to displays the room 
+we want to make a logic using ternary operation when the q is not equals to none this indicate the q having a value,
+else make a q is empty to retrieve all the rooms in the database
+now create a search input in the navbar
+the search input must send to the params the q value
+we create a form having name='q' and the action="{% url 'home' %}" to return to home page and method Get 
+
+filtration done
+-------------------------------------------------------
+page restrictions:
+1)we want to make if the user not athenticated cannot create a room:
+   --use the decarators library
+   from django.contrib.auth.decorators import login_required
+   @login_required(login_url="/") // spacify the route you want to redirect
+now we want to redirect the user to login 
+create login view thats render on the same template as the registration
+create a form having a username and password inputs and submit button
+to hide the section of login and registe define a const name page = 'login'
+check in the template if the page is login run the login form else register form
+@login_required(login_url="/login") 
+now make the logic for the login page
+you must to import the user
+from django.contrib.auth.models import User
+and import 
+from django.contrib.auth import authenticate, login as auth_login, logout
+
+def loginPage(request):
+    page = 'login'
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == "POST":
+        username = request.POST.get('username').lower()
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, 'User does not exist')
+            return redirect('login')  # Return here to avoid further execution
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Username OR password is incorrect')
+    context = {"page": page}
+    return render(request, "base/login_register.html", context)
+
+after the login proccess successfull
+try to show the name of the user in the home page
+{% if user.is_authenticated %}
+    <h1 class="mb-4">Hello, {{ user.username }}</h1>
+    {% endif %}
+this code check if the user is auhtenticated and shows his name    
+
+now we want to to make the user can edit his own rooms and prevent to edit or delete something doesnt related to him
+go to views and make login_required for delete and edit functions
+once you done make the logic for the user cannot be delete or edit only there room
+go to updateroom view :
+if request.user != room.host:
+        return HttpResponse("you are not allowed here")
+        this code send resonse if the user trying to delete the room doesnt related to him it shows message you are not allowed here
+
+now you should hide these buttons
+go to the home template and type this code
+   {% if request.user == room.host %}
+        <div></div>
+              {% endif %}
+this code shows this div only for user that authenticated
+
+now create in navbar the login logout buttons
+  {% if request.user.is_authenticated %}
+<a href="{% url 'logout' %}"> logout</a>
+
+ {% else %}
+    <a href="{% url 'login' %}"> login</a>
+ {% endif %}
+
+get the count of the room :
+roomNumber = Room.objects.count()
+pass the rooms to context and render it in the template
+
+ ------------------------------------------------------------------------------------------------------------------------------------
+ last session 
+ student-Project based what you learn from the course

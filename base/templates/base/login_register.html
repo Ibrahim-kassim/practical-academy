@@ -1,12 +1,40 @@
 {% extends 'main.html' %}
 
-{% block content %}
+{% load widget_tweaks %}
 
+{% block content %}
+{% if page == 'login' %}
+<h2>Login</h2>
 <form action="" method="POST">
     {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value="Submit" name="" id="">
+    <div class="form-group">
+        <input type="text" name="username" class="form-control" placeholder="Username" required>
+    </div>
+    <div class="form-group">
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+{% else %}
+<form action="" method="POST" class="needs-validation" novalidate>
+    {% csrf_token %}
+    <div class="mb-3">
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {% render_field field class="form-control" %}
+                <div class="invalid-feedback">
+                    {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
 
+{% endif %}
 {% endblock %}
